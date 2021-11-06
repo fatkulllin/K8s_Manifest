@@ -1,0 +1,16 @@
+# Минимальное кол-во строк для манифеста
+apiVersion : v1 # Указываем какой api должен использовать
+kind: Pod # что создаем
+metadata: # метадата
+  name: my-web # имя pod
+  labels: # добавляем лейблы
+    env   : prod
+    app   : main
+    tier  : frontend
+    owner : Denis_Astahov
+spec: # какой контейнер запускать, какой image
+  containers:
+    - name : container-apache
+      image: httpd:latest
+      ports:
+        - containerPort: 80 # открываем порт 80

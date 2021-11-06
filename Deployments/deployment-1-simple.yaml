@@ -1,0 +1,21 @@
+#Минимальный манифест файл для deployment.
+apiVersion : apps/v1 #какая верси api кибернетесса
+kind: Deployment
+metadata: # Как будет называться наш Deployment
+  name: my-web-deployment #название нашего deployment
+  labels:
+    app : my-k8s-application #Хорошей практикой является всегда задавать лейблы
+spec: #спецификация
+    selector: # с какими pod будет работать. С лейблеами project kgb.
+      matchLabels:
+        project: kgb
+    template: # Отсюда до конца мы описываем как выглядит наш Pod.
+      metadata:
+        labels:
+          project: kgb
+      spec:
+        containers:
+          - name : kgb-web
+            image: sweetkinderlol/k8sapp:latest
+            ports:
+              - containerPort: 80

@@ -1,0 +1,46 @@
+#Минимальный манифест файл для deployment.
+apiVersion : apps/v1 #какая верси api кибернетесса
+kind: Deployment
+metadata: # Как будет называться наш Deployment
+  name: my-web-deployment-autoscaling #название нашего deployment
+  labels:
+    app  : my-k8s-application #Хорошей практикой является всегда задавать лейблы
+    env  : prod
+    owner: Denis
+spec: #спецификация
+  replicas: 3
+  selector: # с какими pod будет работать. С лейблеами project cia.
+    matchLabels:
+      project: mossad
+  template: # Отсюда до конца мы описываем как выглядит наш Pod.
+    metadata:
+      labels:
+        project: mossad
+    spec:
+      containers:
+        - name : mossad-web
+          image: sweetkinderlol/k8sapp:latest
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: autoscaling/v2beta1 # создаем 
+kind: HorizontalPodAutoscaler # создаем AutoScaler
+metadata:
+  name: my-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta1v1
+    kind: Deployment
+    name: my-web-deployment-autoscaling #название должно соответсовать выше указаному
+  minReplicas: 2
+  maxReplicas: 6
+  metrics: # как будем склеить либо СПЦ утилизация 70 или на мемори 80
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 80
